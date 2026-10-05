@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { @apply bg-white font-sans text-ink antialiased; text-rendering: optimizeLegibility; }
+  ::selection { background: rgba(0, 165, 245, .25); }
+  /* Elements with the `hidden` attribute must stay hidden even when they also carry a display utility (e.g. `flex`). */
+  [hidden] { display: none !important; }
+  main > section, main > div > section { isolation: isolate; }
+  :focus-visible { outline: 3px solid #1261EB; outline-offset: 2px; border-radius: 6px; }
+}
+
+@layer components {
+  .section { @apply py-20 sm:py-24 lg:py-28; }
+
+  .btn { @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-7 py-3 text-[15px] font-semibold transition duration-200 disabled:cursor-not-allowed disabled:opacity-60; }
+  .btn-primary { @apply btn bg-gradient-to-r from-brand-royal to-brand-cyan text-white shadow-glow hover:-translate-y-0.5 hover:shadow-[0_14px_34px_-10px_rgba(18,97,235,.6)] active:translate-y-0; background-size: 150% 100%; }
+  .btn-primary:hover { background-position: 100% 0; }
+  .btn-accent { @apply btn bg-navy-900 text-white shadow-[0_10px_30px_-12px_rgba(0,16,56,.6)] hover:-translate-y-0.5 hover:bg-navy-800; }
+  .btn-ghost { @apply btn border border-surface-line bg-white text-navy-900 shadow-soft hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-lift; }
+  .btn-white { @apply btn bg-white text-navy-900 shadow-lg hover:-translate-y-0.5 hover:shadow-xl; }
+  .btn-outline-white { @apply btn border border-white/40 bg-white/10 text-white backdrop-blur hover:-translate-y-0.5 hover:bg-white/20; }
+
+  .card { @apply rounded-3xl border border-surface-line bg-white p-6 shadow-soft transition duration-300 hover:-translate-y-1 hover:border-blue-100 hover:shadow-lift sm:p-7; }
+
+  .text-gradient { @apply bg-gradient-to-r from-brand-royal via-brand-cyan to-brand-teal bg-clip-text text-transparent; }
+  .text-gradient-light { @apply bg-gradient-to-r from-sky-300 via-cyan-300 to-emerald-300 bg-clip-text text-transparent; }
+
+  /* Network / constellation background — nodes, links, dot grid and a soft diagonal band */
+  .bg-network {
+    background-image:
+      linear-gradient(160deg, transparent 38%, rgba(0, 165, 245, .07) 38%, rgba(0, 165, 245, .07) 50%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='480' viewBox='0 0 720 480'%3E%3Cg stroke='rgba(18,97,235,0.16)' stroke-width='1' fill='none'%3E%3Cline x1='70' y1='60' x2='250' y2='70'/%3E%3Cline x1='250' y1='70' x2='430' y2='120'/%3E%3Cline x1='430' y1='120' x2='640' y2='50'/%3E%3Cline x1='640' y1='50' x2='650' y2='210'/%3E%3Cline x1='430' y1='120' x2='650' y2='210'/%3E%3Cline x1='650' y1='210' x2='530' y2='280'/%3E%3Cline x1='530' y1='280' x2='660' y2='420'/%3E%3Cline x1='530' y1='280' x2='330' y2='310'/%3E%3Cline x1='330' y1='310' x2='160' y2='250'/%3E%3Cline x1='160' y1='250' x2='70' y2='410'/%3E%3Cline x1='70' y1='60' x2='270' y2='170'/%3E%3Cline x1='270' y1='170' x2='160' y2='250'/%3E%3Cline x1='270' y1='170' x2='430' y2='120'/%3E%3Cline x1='330' y1='310' x2='410' y2='440'/%3E%3Cline x1='410' y1='440' x2='660' y2='420'/%3E%3Cline x1='70' y1='410' x2='410' y2='440'/%3E%3C/g%3E%3Cg fill='rgba(18,97,235,0.38)'%3E%3Ccircle cx='250' cy='70' r='2.4'/%3E%3Ccircle cx='430' cy='120' r='3.2'/%3E%3Ccircle cx='640' cy='50' r='2.4'/%3E%3Ccircle cx='160' cy='250' r='3.2'/%3E%3Ccircle cx='330' cy='310' r='2.4'/%3E%3Ccircle cx='530' cy='280' r='3.2'/%3E%3Ccircle cx='70' cy='410' r='2.4'/%3E%3Ccircle cx='410' cy='440' r='2.4'/%3E%3Ccircle cx='650' cy='210' r='2.4'/%3E%3Ccircle cx='270' cy='170' r='2.4'/%3E%3C/g%3E%3Ccircle cx='70' cy='60' r='11' fill='%2300B8A0' fill-opacity='.12' stroke='%2300B8A0' stroke-opacity='.45'/%3E%3Ccircle cx='70' cy='60' r='4.5' fill='%2300B8A0'/%3E%3Ccircle cx='660' cy='420' r='11' fill='%2300B8A0' fill-opacity='.12' stroke='%2300B8A0' stroke-opacity='.45'/%3E%3Ccircle cx='660' cy='420' r='4.5' fill='%2300B8A0'/%3E%3C/svg%3E"),
+      radial-gradient(rgba(15, 23, 42, .09) 1px, transparent 1.6px);
+    background-size: 100% 100%, 720px 480px, 26px 26px;
+    background-repeat: no-repeat, repeat, repeat;
+  }
+  .bg-grid {
+    background-image:
+      linear-gradient(160deg, transparent 38%, rgba(0, 165, 245, .07) 38%, rgba(0, 165, 245, .07) 50%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='480' viewBox='0 0 720 480'%3E%3Cg stroke='rgba(18,97,235,0.16)' stroke-width='1' fill='none'%3E%3Cline x1='70' y1='60' x2='250' y2='70'/%3E%3Cline x1='250' y1='70' x2='430' y2='120'/%3E%3Cline x1='430' y1='120' x2='640' y2='50'/%3E%3Cline x1='640' y1='50' x2='650' y2='210'/%3E%3Cline x1='430' y1='120' x2='650' y2='210'/%3E%3Cline x1='650' y1='210' x2='530' y2='280'/%3E%3Cline x1='530' y1='280' x2='660' y2='420'/%3E%3Cline x1='530' y1='280' x2='330' y2='310'/%3E%3Cline x1='330' y1='310' x2='160' y2='250'/%3E%3Cline x1='160' y1='250' x2='70' y2='410'/%3E%3Cline x1='70' y1='60' x2='270' y2='170'/%3E%3Cline x1='270' y1='170' x2='160' y2='250'/%3E%3Cline x1='270' y1='170' x2='430' y2='120'/%3E%3Cline x1='330' y1='310' x2='410' y2='440'/%3E%3Cline x1='410' y1='440' x2='660' y2='420'/%3E%3Cline x1='70' y1='410' x2='410' y2='440'/%3E%3C/g%3E%3Cg fill='rgba(18,97,235,0.38)'%3E%3Ccircle cx='250' cy='70' r='2.4'/%3E%3Ccircle cx='430' cy='120' r='3.2'/%3E%3Ccircle cx='640' cy='50' r='2.4'/%3E%3Ccircle cx='160' cy='250' r='3.2'/%3E%3Ccircle cx='330' cy='310' r='2.4'/%3E%3Ccircle cx='530' cy='280' r='3.2'/%3E%3Ccircle cx='70' cy='410' r='2.4'/%3E%3Ccircle cx='410' cy='440' r='2.4'/%3E%3Ccircle cx='650' cy='210' r='2.4'/%3E%3Ccircle cx='270' cy='170' r='2.4'/%3E%3C/g%3E%3Ccircle cx='70' cy='60' r='11' fill='%2300B8A0' fill-opacity='.12' stroke='%2300B8A0' stroke-opacity='.45'/%3E%3Ccircle cx='70' cy='60' r='4.5' fill='%2300B8A0'/%3E%3Ccircle cx='660' cy='420' r='11' fill='%2300B8A0' fill-opacity='.12' stroke='%2300B8A0' stroke-opacity='.45'/%3E%3Ccircle cx='660' cy='420' r='4.5' fill='%2300B8A0'/%3E%3C/svg%3E"),
+      radial-gradient(rgba(15, 23, 42, .09) 1px, transparent 1.6px);
+    background-size: 100% 100%, 720px 480px, 26px 26px;
+    background-repeat: no-repeat, repeat, repeat;
+    animation: network-drift 140s linear infinite;
+  }
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(160deg, transparent 38%, rgba(56, 189, 248, .06) 38%, rgba(56, 189, 248, .06) 50%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='480' viewBox='0 0 720 480'%3E%3Cg stroke='rgba(125,211,252,0.16)' stroke-width='1' fill='none'%3E%3Cline x1='70' y1='60' x2='250' y2='70'/%3E%3Cline x1='250' y1='70' x2='430' y2='120'/%3E%3Cline x1='430' y1='120' x2='640' y2='50'/%3E%3Cline x1='640' y1='50' x2='650' y2='210'/%3E%3Cline x1='430' y1='120' x2='650' y2='210'/%3E%3Cline x1='650' y1='210' x2='530' y2='280'/%3E%3Cline x1='530' y1='280' x2='660' y2='420'/%3E%3Cline x1='530' y1='280' x2='330' y2='310'/%3E%3Cline x1='330' y1='310' x2='160' y2='250'/%3E%3Cline x1='160' y1='250' x2='70' y2='410'/%3E%3Cline x1='70' y1='60' x2='270' y2='170'/%3E%3Cline x1='270' y1='170' x2='160' y2='250'/%3E%3Cline x1='270' y1='170' x2='430' y2='120'/%3E%3Cline x1='330' y1='310' x2='410' y2='440'/%3E%3Cline x1='410' y1='440' x2='660' y2='420'/%3E%3Cline x1='70' y1='410' x2='410' y2='440'/%3E%3C/g%3E%3Cg fill='rgba(125,211,252,0.45)'%3E%3Ccircle cx='250' cy='70' r='2.4'/%3E%3Ccircle cx='430' cy='120' r='3.2'/%3E%3Ccircle cx='640' cy='50' r='2.4'/%3E%3Ccircle cx='160' cy='250' r='3.2'/%3E%3Ccircle cx='330' cy='310' r='2.4'/%3E%3Ccircle cx='530' cy='280' r='3.2'/%3E%3Ccircle cx='70' cy='410' r='2.4'/%3E%3Ccircle cx='410' cy='440' r='2.4'/%3E%3Ccircle cx='650' cy='210' r='2.4'/%3E%3Ccircle cx='270' cy='170' r='2.4'/%3E%3C/g%3E%3Ccircle cx='70' cy='60' r='11' fill='%232DD4BF' fill-opacity='.12' stroke='%232DD4BF' stroke-opacity='.45'/%3E%3Ccircle cx='70' cy='60' r='4.5' fill='%232DD4BF'/%3E%3Ccircle cx='660' cy='420' r='11' fill='%232DD4BF' fill-opacity='.12' stroke='%232DD4BF' stroke-opacity='.45'/%3E%3Ccircle cx='660' cy='420' r='4.5' fill='%232DD4BF'/%3E%3C/svg%3E"),
+      radial-gradient(rgba(255, 255, 255, .10) 1px, transparent 1.6px);
+    background-size: 100% 100%, 720px 480px, 26px 26px;
+    background-repeat: no-repeat, repeat, repeat;
+    animation: network-drift 140s linear infinite;
+    mask-image: radial-gradient(ellipse at center, black 35%, transparent 80%);
+  }
+  section.bg-surface {
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='720' height='480' viewBox='0 0 720 480'%3E%3Cg stroke='rgba(18,97,235,0.16)' stroke-width='1' fill='none'%3E%3Cline x1='70' y1='60' x2='250' y2='70'/%3E%3Cline x1='250' y1='70' x2='430' y2='120'/%3E%3Cline x1='430' y1='120' x2='640' y2='50'/%3E%3Cline x1='640' y1='50' x2='650' y2='210'/%3E%3Cline x1='430' y1='120' x2='650' y2='210'/%3E%3Cline x1='650' y1='210' x2='530' y2='280'/%3E%3Cline x1='530' y1='280' x2='660' y2='420'/%3E%3Cline x1='530' y1='280' x2='330' y2='310'/%3E%3Cline x1='330' y1='310' x2='160' y2='250'/%3E%3Cline x1='160' y1='250' x2='70' y2='410'/%3E%3Cline x1='70' y1='60' x2='270' y2='170'/%3E%3Cline x1='270' y1='170' x2='160' y2='250'/%3E%3Cline x1='270' y1='170' x2='430' y2='120'/%3E%3Cline x1='330' y1='310' x2='410' y2='440'/%3E%3Cline x1='410' y1='440' x2='660' y2='420'/%3E%3Cline x1='70' y1='410' x2='410' y2='440'/%3E%3C/g%3E%3Cg fill='rgba(18,97,235,0.38)'%3E%3Ccircle cx='250' cy='70' r='2.4'/%3E%3Ccircle cx='430' cy='120' r='3.2'/%3E%3Ccircle cx='640' cy='50' r='2.4'/%3E%3Ccircle cx='160' cy='250' r='3.2'/%3E%3Ccircle cx='330' cy='310' r='2.4'/%3E%3Ccircle cx='530' cy='280' r='3.2'/%3E%3Ccircle cx='70' cy='410' r='2.4'/%3E%3Ccircle cx='410' cy='440' r='2.4'/%3E%3Ccircle cx='650' cy='210' r='2.4'/%3E%3Ccircle cx='270' cy='170' r='2.4'/%3E%3C/g%3E%3Ccircle cx='70' cy='60' r='11' fill='%2300B8A0' fill-opacity='.12' stroke='%2300B8A0' stroke-opacity='.45'/%3E%3Ccircle cx='70' cy='60' r='4.5' fill='%2300B8A0'/%3E%3Ccircle cx='660' cy='420' r='11' fill='%2300B8A0' fill-opacity='.12' stroke='%2300B8A0' stroke-opacity='.45'/%3E%3Ccircle cx='660' cy='420' r='4.5' fill='%2300B8A0'/%3E%3C/svg%3E"),
+      radial-gradient(rgba(15, 23, 42, .07) 1px, transparent 1.6px);
+    background-size: 720px 480px, 26px 26px;
+  }
+
+  .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1); }
+  .reveal-in { opacity: 1; transform: none; }
+
+  .prose-list li { @apply relative pl-7; }
+  .prose-list li::before { content: ""; @apply absolute left-0 top-[.55em] h-2.5 w-2.5 rounded-full bg-gradient-to-br from-brand-royal to-brand-cyan; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* Ensure content is visible if JS is disabled */
+@media (scripting: none) { .reveal { opacity: 1; transform: none; } }
+
+/* Course image strip */
+.marquee-track { animation: marquee 55s linear infinite; }
+.marquee:hover .marquee-track, .marquee:focus-within .marquee-track { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(calc(-50% - 10px)); } }
+@media (prefers-reduced-motion: reduce) {
+  .marquee { overflow-x: auto; }
+  .marquee-track { animation: none !important; }
+}
+
+@keyframes network-drift {
+  from { background-position: 0 0, 0 0, 0 0; }
+  to { background-position: 0 0, 720px 480px, 26px 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bg-grid, .bg-grid-dark { animation: none; }
+}
