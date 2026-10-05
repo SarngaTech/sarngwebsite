@@ -89,11 +89,15 @@ const button = (label: string, href: string) =>
   `<a href="${href}" style="display:inline-block;padding:12px 24px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;border-radius:999px;border:1px solid ${ROYAL};">${esc(label)}</a>` +
   `</td></tr></table>`;
 
-/** Greeting name: the full name as entered (many Indian names start with the family name); ALL-CAPS input is tidied to Title Case. */
+/**
+ * Greeting name: the full name as entered (many Indian names start with the family name).
+ * ALL-CAPS or all-lowercase input is tidied to Title Case; mixed case (e.g. "McDonald", "D'Souza") is kept as typed.
+ */
 const greetingName = (name: string) => {
   const n = (name || "").trim().replace(/\s+/g, " ");
   if (!n) return "there";
-  return n === n.toUpperCase() ? n.toLowerCase().replace(/(^|[\s.'-])\p{L}/gu, (m) => m.toUpperCase()) : n;
+  const uniform = n === n.toUpperCase() || n === n.toLowerCase();
+  return uniform ? n.toLowerCase().replace(/(^|[\s.'-])\p{L}/gu, (m) => m.toUpperCase()) : n;
 };
 
 /** Section describing what the person asked about, matched to site content. */
