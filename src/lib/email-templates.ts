@@ -6,6 +6,7 @@ import { services } from "@/data/services";
 import { internship } from "@/data/internships";
 import { projects } from "@/data/projects";
 import type { LeadPayload } from "./leads";
+import { EMAIL_LOGO_CID, EMAIL_LOGO_HEIGHT, EMAIL_LOGO_WIDTH } from "./email-logo";
 
 /**
  * Email templates for lead notifications (to Sarng) and auto-replies (to the person).
@@ -56,7 +57,7 @@ function layout(title: string, bodyHtml: string) {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BG};padding:24px 12px;"><tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:14px;overflow:hidden;border:1px solid ${LINE};">
 <tr><td style="background:${NAVY};padding:22px 28px;">
-  <img src="${site.url}/brand/sarng-logo-white.png" alt="${esc(site.name)}" width="190" style="display:block;border:0;max-width:190px;height:auto;">
+  <img src="cid:${EMAIL_LOGO_CID}" alt="${esc(site.name)}" width="${EMAIL_LOGO_WIDTH}" height="${EMAIL_LOGO_HEIGHT}" style="display:block;border:0;outline:none;width:${EMAIL_LOGO_WIDTH}px;max-width:100%;height:auto;color:#ffffff;font-size:22px;font-weight:bold;font-family:Arial,Helvetica,sans-serif;">
 </td></tr>
 <tr><td style="padding:28px 28px 8px 28px;font-size:15px;line-height:1.6;">${bodyHtml}</td></tr>
 <tr><td style="padding:8px 28px 28px 28px;">
@@ -81,10 +82,19 @@ const ul = (items: string[]) =>
   `<ul style="margin:0 0 12px 0;padding-left:20px;">${items.map((i) => `<li style="margin:0 0 6px 0;">${esc(i)}</li>`).join("")}</ul>`;
 const ol = (items: string[]) =>
   `<ol style="margin:0 0 12px 0;padding-left:20px;">${items.map((i) => `<li style="margin:0 0 6px 0;">${i}</li>`).join("")}</ol>`;
+/** "Bulletproof" button: the colour sits on the table cell (bgcolor), so it survives Gmail, Outlook and printing. */
 const button = (label: string, href: string) =>
-  `<p style="margin:18px 0;"><a href="${href}" style="display:inline-block;background:${ROYAL};color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:999px;">${esc(label)}</a></p>`;
+  `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:18px 0;"><tr>` +
+  `<td bgcolor="${ROYAL}" style="background:${ROYAL};border-radius:999px;mso-padding-alt:12px 24px;">` +
+  `<a href="${href}" style="display:inline-block;padding:12px 24px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;border-radius:999px;border:1px solid ${ROYAL};">${esc(label)}</a>` +
+  `</td></tr></table>`;
 
-const firstName = (name: string) => esc((name || "").trim().split(/\s+/)[0] || "there");
+/** Greeting name: the full name as entered (many Indian names start with the family name); ALL-CAPS input is tidied to Title Case. */
+const greetingName = (name: string) => {
+  const n = (name || "").trim().replace(/\s+/g, " ");
+  if (!n) return "there";
+  return n === n.toUpperCase() ? n.toLowerCase().replace(/(^|[\s.'-])\p{L}/gu, (m) => m.toUpperCase()) : n;
+};
 
 /** Section describing what the person asked about, matched to site content. */
 function interestSection(lead: LeadPayload): { html: string; text: string; label: string } {
@@ -225,7 +235,7 @@ export function autoReplyEmail(lead: LeadPayload, meta: EmailMeta = {}): EmailCo
 
   const html = layout(
     subject,
-    p(`Dear ${firstName(lead.name)},`) +
+    p(`Dear ${esc(greetingName(lead.name))},`) +
       opener +
       refHtml +
       sec.html +
@@ -235,7 +245,7 @@ export function autoReplyEmail(lead: LeadPayload, meta: EmailMeta = {}): EmailCo
   );
 
   const text =
-    `Dear ${(lead.name || "").split(" ")[0] || "there"},\n\n` +
+    `Dear ${greetingName(lead.name)},\n\n` +
     (isIntern
       ? `Thank you for applying for an internship with ${site.name}. We have received your application and our team will review it.\n\n`
       : `Thank you for contacting ${site.name}. We have received your enquiry about ${sec.label} and our team will contact you shortly.\n\n`) +

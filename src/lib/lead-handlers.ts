@@ -3,6 +3,16 @@ import nodemailer from "nodemailer";
 import type { LeadPayload } from "./leads";
 import { site } from "@/data/site";
 import { autoReplyEmail, notificationEmail, type EmailMeta } from "./email-templates";
+import { EMAIL_LOGO_CID, EMAIL_LOGO_PNG_BASE64 } from "./email-logo";
+
+/** Logo embedded in every email (referenced in the HTML as cid:…), so it shows without loading anything from the website. */
+const logoAttachment = () => ({
+  filename: "sarng-infotech.png",
+  content: Buffer.from(EMAIL_LOGO_PNG_BASE64, "base64"),
+  contentType: "image/png",
+  cid: EMAIL_LOGO_CID,
+  contentDisposition: "inline" as const,
+});
 
 /**
  * Server-side lead delivery: email (GoDaddy SMTP via Nodemailer) and optional webhook.
@@ -95,7 +105,7 @@ export async function sendNotification(lead: StampedLead, resume?: ResumeMeta, m
       subject: mail.subject,
       html: mail.html,
       text: mail.text,
-      attachments: resume ? [{ filename: resume.name, content: toBuffer(resume.data), contentType: resume.type }] : undefined,
+      attachments: [logoAttachment(), ...(resume ? [{ filename: resume.name, content: toBuffer(resume.data), contentType: resume.type }] : [])],
     });
     if (process.env.MAIL_TRANSPORT === "json") console.info("[mail:notification]", info.message);
     return { status: "SENT", recipient, subject: mail.subject, messageId: info.messageId };
@@ -119,6 +129,7 @@ export async function sendAutoReply(lead: LeadPayload, meta: EmailMeta = {}): Pr
       subject: mail.subject,
       html: mail.html,
       text: mail.text,
+      attachments: [logoAttachment()],
     });
     if (process.env.MAIL_TRANSPORT === "json") console.info("[mail:auto-reply]", info.message);
     return { status: "SENT", recipient, subject: mail.subject, messageId: info.messageId };

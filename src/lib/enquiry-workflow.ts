@@ -63,7 +63,7 @@ export async function processEnquiry(lead: LeadPayload, ctx: { ipHash?: string; 
       return { ok: false, saved: false, error: `Database: ${dbError}. Backup email: ${backup.status}${backup.error ? ` (${backup.error})` : ""}` };
     }
     await sendAutoReply(lead);
-    return { ok: true, saved: false };
+    return { ok: true, saved: false, error: `Not saved to the database (${dbError}). The team email was sent as a backup.` };
   }
 
   const saved = enquiry;

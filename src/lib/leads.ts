@@ -134,6 +134,7 @@ export async function submitLead(
     const res = await fetch("/api/enquiry", { method: "POST", body: fd });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) return { ok: false, errors: data.errors, message: data.message || "Something went wrong. Please try again." };
+    if (typeof data.warning === "string") console.warn(`[enquiry] ${data.warning}`);
     return { ok: true, reference: typeof data.reference === "string" ? data.reference : undefined };
   } catch {
     return { ok: false, message: "Network error. Please check your connection and try again." };

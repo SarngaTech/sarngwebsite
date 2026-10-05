@@ -89,7 +89,12 @@ export async function POST(req: Request) {
     }
     // Emails run after the response is sent, so the visitor gets their reference immediately.
     if (result.deliver) after(result.deliver);
-    return NextResponse.json({ ok: true, reference: result.reference ?? null });
+    return NextResponse.json({
+      ok: true,
+      reference: result.reference ?? null,
+      // Development only: explain why an enquiry was accepted without being saved.
+      ...(process.env.NODE_ENV === "development" && !result.saved && result.error ? { warning: result.error } : {}),
+    });
   } catch (err) {
     console.error("[lead] unexpected error", err);
     return NextResponse.json({ message: failMessage(err instanceof Error ? err.message : String(err)) }, { status: 502 });
