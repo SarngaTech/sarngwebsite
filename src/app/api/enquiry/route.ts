@@ -14,7 +14,7 @@ const DB_LIMIT = { max: 8, minutes: 10 };
 
 const FIELDS: (keyof LeadPayload)[] = [
   "type", "name", "email", "phone", "message", "interest", "persona",
-  "college", "degree", "year", "technology", "skillLevel", "projectType", "batch", "source",
+  "college", "degree", "year", "technology", "skillLevel", "projectType", "batch", "source", "privacyConsent",
 ];
 
 // Basic in-memory rate limit (per server instance). Replace with a shared store in multi-instance deployments.

@@ -12,7 +12,7 @@ import {
   type LeadPayload,
   HONEYPOT_FIELD,
 } from "@/lib/leads";
-import { Honeypot, SelectField, SuccessMessage, TextAreaField, TextField } from "./ui/FormFields";
+import { Honeypot, PrivacyConsent, SelectField, SuccessMessage, TextAreaField, TextField } from "./ui/FormFields";
 import { interestOptions } from "./EnquiryModal";
 import { site } from "@/data/site";
 
@@ -36,6 +36,7 @@ export default function ContactForm() {
       name: g("name"), email: g("email"), phone: g("phone"),
       persona: g("persona"), interest: g("interest"), batch: showBatch ? g("batch") : "", message: g("message"),
       source: "/contact",
+      privacyConsent: g("privacyConsent") === "yes" ? "yes" : "",
     };
     const v = validateLead(payload);
     setErrors(v);
@@ -100,6 +101,7 @@ export default function ContactForm() {
       />
       {showBatch && <SelectField label="Preferred Batch" name="batch" options={site.batches.options} placeholder="Select a batch" />}
       <TextAreaField label={persona === "Business" ? "Requirement" : "Message"} name="message" placeholder={messageHint(interest, persona)} error={errors.message} className="sm:col-span-2" />
+      <PrivacyConsent error={errors.privacyConsent} className="sm:col-span-2" />
       {formError && <p className="text-sm text-red-600 sm:col-span-2" role="alert">{formError}</p>}
       <button type="submit" disabled={status === "sending"} className="btn-primary w-full sm:col-span-2">
         {status === "sending" ? "Sending…" : "Send Enquiry"}

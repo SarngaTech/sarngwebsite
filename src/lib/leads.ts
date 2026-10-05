@@ -25,7 +25,17 @@ export interface LeadPayload {
   projectType?: string;
   /** Page the form was submitted from */
   source?: string;
+  /** "yes" when the person ticked the privacy-notice checkbox (required on every form) */
+  privacyConsent?: string;
 }
+
+/* ---------------------------------------------------------------------------
+ * Privacy notice / consent (Digital Personal Data Protection Act, 2023)
+ * ------------------------------------------------------------------------- */
+export const PRIVACY_POLICY_PATH = "/privacy-policy";
+/** Effective date of the privacy policy; recorded with each consent so it is clear which notice was accepted. */
+export const PRIVACY_NOTICE_VERSION = "2026-10-05";
+export const PRIVACY_CONSENT_ERROR = "Please review and accept the privacy notice before submitting.";
 
 /**
  * Hidden anti-spam (honeypot) field. Deliberately given a neutral name and label and made read-only so browser
@@ -99,6 +109,9 @@ export function validateLead(p: Partial<LeadPayload>): FieldErrors {
     if (!p.projectType) e.projectType = "Please select a project type.";
     if (!p.technology) e.technology = "Please select a technology.";
   }
+  // Last, so the first highlighted field stays in form order. Checked in the browser and again on the
+  // server (the API route runs this same function), so it cannot be bypassed by skipping the form.
+  if (p.privacyConsent !== "yes") e.privacyConsent = PRIVACY_CONSENT_ERROR;
   return e;
 }
 

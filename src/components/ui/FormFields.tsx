@@ -1,4 +1,6 @@
-import { HONEYPOT_FIELD } from "@/lib/leads";
+import Link from "next/link";
+import { useId, useState } from "react";
+import { HONEYPOT_FIELD, PRIVACY_POLICY_PATH } from "@/lib/leads";
 import { cn } from "@/lib/cn";
 
 const base =
@@ -84,6 +86,61 @@ export function TextAreaField({ label, name, error, required, className, ...rest
         {...rest}
       />
     </Wrap>
+  );
+}
+
+/**
+ * Privacy notice + consent checkbox shown above the submit button on every enquiry form.
+ * Unchecked by default; the form (and the API) refuse the submission until it is ticked.
+ * The Privacy Policy link opens in a new tab so a half-filled form is never lost.
+ */
+export function PrivacyConsent({
+  error,
+  purpose = "respond to my enquiry",
+  className,
+}: {
+  error?: string;
+  /** What the details will be used for, e.g. "process my internship application" */
+  purpose?: string;
+  className?: string;
+}) {
+  const id = useId();
+  const errorId = `${id}-error`;
+  const [checked, setChecked] = useState(false);
+  const showError = error && !checked;
+  const policyLink = (
+    <Link href={PRIVACY_POLICY_PATH} target="_blank" rel="noopener noreferrer" className="font-semibold text-brand-royal underline underline-offset-2 hover:text-navy-900">
+      Privacy Policy<span className="sr-only"> (opens in a new tab)</span>
+    </Link>
+  );
+  return (
+    <div className={cn("rounded-xl border bg-surface px-4 py-3", showError ? "border-red-400" : "border-surface-line", className)}>
+      <p className="text-xs leading-relaxed text-ink-soft">
+        Your information will be used to {purpose.replace(/\bmy\b/g, "your").replace(/\bI\b/g, "you")} and handled as described in our {policyLink}.
+      </p>
+      <label className="mt-2.5 flex cursor-pointer items-start gap-3 text-sm leading-relaxed text-navy-900">
+        <input
+          type="checkbox"
+          name="privacyConsent"
+          value="yes"
+          checked={checked}
+          onChange={(e) => setChecked(e.target.checked)}
+          required
+          aria-invalid={!!showError}
+          aria-describedby={showError ? errorId : undefined}
+          className="mt-0.5 h-5 w-5 shrink-0 cursor-pointer rounded border-slate-400 accent-brand-royal focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-100"
+        />
+        <span>
+          I agree that Sarng Infotech may collect and use the information I provide to {purpose}, as described in the {policyLink}.
+          <span className="text-brand-royal" aria-hidden> *</span>
+        </span>
+      </label>
+      {showError && (
+        <p id={errorId} className="mt-1.5 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      )}
+    </div>
   );
 }
 

@@ -17,7 +17,7 @@ import {
   type LeadPayload,
   HONEYPOT_FIELD,
 } from "@/lib/leads";
-import { Honeypot, SelectField, SuccessMessage, TextAreaField, TextField } from "./ui/FormFields";
+import { Honeypot, PrivacyConsent, SelectField, SuccessMessage, TextAreaField, TextField } from "./ui/FormFields";
 
 export const interestOptions = [
   ...courses.map((c) => c.title),
@@ -100,6 +100,7 @@ function EnquiryModal({ defaults, onClose }: { defaults: { interest?: string; pe
       batch: showBatch ? String(fd.get("batch") || "") : "",
       message: String(fd.get("message") || ""),
       source: typeof window !== "undefined" ? window.location.pathname : undefined,
+      privacyConsent: fd.get("privacyConsent") === "yes" ? "yes" : "",
     };
     const v = validateLead(payload);
     setErrors(v);
@@ -177,11 +178,11 @@ function EnquiryModal({ defaults, onClose }: { defaults: { interest?: string; pe
                 className="sm:col-span-2"
               />
               <TextAreaField label={persona === "Business" ? "Requirement" : "Message"} name="message" placeholder={messageHint(interest, persona)} error={errors.message} className="sm:col-span-2" />
+              <PrivacyConsent error={errors.privacyConsent} className="sm:col-span-2" />
               {formError && <p className="text-sm text-red-600 sm:col-span-2" role="alert">{formError}</p>}
               <button type="submit" disabled={status === "sending"} className="btn-primary mt-1 w-full sm:col-span-2">
                 {status === "sending" ? "Submitting…" : "Submit Enquiry"}
               </button>
-              <p className="text-center text-xs text-ink-mute sm:col-span-2">We use your details only to respond to your enquiry.</p>
             </form>
           )}
         </div>

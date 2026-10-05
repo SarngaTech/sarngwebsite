@@ -2,7 +2,7 @@ import "server-only";
 import { createHash } from "node:crypto";
 import type { EmailKind, EmailStatus, Enquiry, EnquiryStatus, EnquiryType } from "@prisma/client";
 import { db } from "./db";
-import type { LeadPayload, LeadType } from "./leads";
+import { PRIVACY_NOTICE_VERSION, type LeadPayload, type LeadType } from "./leads";
 import type { EmailResult, ResumeMeta } from "./lead-handlers";
 
 /** Persistence layer for enquiries, email results, notes and audit events. */
@@ -75,7 +75,15 @@ export async function createEnquiry(lead: LeadPayload, ctx: { ipHash?: string; u
       source: lead.source || null,
       ipHash: ctx.ipHash || null,
       userAgent: ctx.userAgent?.slice(0, 300) || null,
-      events: { create: { action: "created", detail: `Submitted via ${lead.source || "website"}` } },
+      // Consent is kept in the enquiry's history log (no schema change): which notice version was accepted, and when.
+      events: {
+        create: [
+          { action: "created", detail: `Submitted via ${lead.source || "website"}` },
+          ...(lead.privacyConsent === "yes"
+            ? [{ action: "privacy_consent", detail: `Accepted the privacy notice (Privacy Policy version ${PRIVACY_NOTICE_VERSION})` }]
+            : []),
+        ],
+      },
       ...(r
         ? {
             resume: {

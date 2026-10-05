@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { FileUp } from "lucide-react";
 import { internship } from "@/data/internships";
 import { RESUME_MAX_BYTES, RESUME_TYPES, submitLead, validateLead, type FieldErrors, type LeadPayload, HONEYPOT_FIELD } from "@/lib/leads";
-import { Honeypot, SelectField, SuccessMessage, TextAreaField, TextField } from "./ui/FormFields";
+import { Honeypot, PrivacyConsent, SelectField, SuccessMessage, TextAreaField, TextField } from "./ui/FormFields";
 
 export default function InternshipForm() {
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -24,6 +24,7 @@ export default function InternshipForm() {
       college: g("college"), degree: g("degree"), year: g("year"),
       technology: g("technology"), skillLevel: g("skillLevel"), message: g("message"),
       source: "/internships",
+      privacyConsent: g("privacyConsent") === "yes" ? "yes" : "",
     };
     const v = validateLead(payload);
     const file = fd.get("resume") as File | null;
@@ -99,6 +100,7 @@ export default function InternshipForm() {
 
       <TextAreaField label="Message" name="message" placeholder="Tell us about your interests, projects or goals (optional)" error={errors.message} className="sm:col-span-2" />
 
+      <PrivacyConsent error={errors.privacyConsent} purpose="process my internship application (including any resume I upload)" className="sm:col-span-2" />
       {formError && <p className="text-sm text-red-600 sm:col-span-2" role="alert">{formError}</p>}
       <button type="submit" disabled={status === "sending"} className="btn-accent w-full sm:col-span-2">
         {status === "sending" ? "Submitting…" : "Apply Now"}

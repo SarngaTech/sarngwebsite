@@ -3,7 +3,7 @@ import { useRef, useState } from "react";
 import { projects } from "@/data/projects";
 import { internship } from "@/data/internships";
 import { submitLead, validateLead, type FieldErrors, type LeadPayload, HONEYPOT_FIELD } from "@/lib/leads";
-import { Honeypot, SelectField, SuccessMessage, TextAreaField, TextField } from "./ui/FormFields";
+import { Honeypot, PrivacyConsent, SelectField, SuccessMessage, TextAreaField, TextField } from "./ui/FormFields";
 
 export default function ProjectForm() {
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -25,6 +25,7 @@ export default function ProjectForm() {
       interest: "Student Project",
       persona: "Student",
       source: "/projects",
+      privacyConsent: g("privacyConsent") === "yes" ? "yes" : "",
     };
     const v = validateLead(payload);
     setErrors(v);
@@ -75,6 +76,7 @@ export default function ProjectForm() {
         error={errors.message}
         className="sm:col-span-2"
       />
+      <PrivacyConsent error={errors.privacyConsent} purpose="respond to my project enquiry" className="sm:col-span-2" />
       {formError && <p className="text-sm text-red-600 sm:col-span-2" role="alert">{formError}</p>}
       <button type="submit" disabled={status === "sending"} className="btn-primary w-full sm:col-span-2">
         {status === "sending" ? "Submitting…" : "Enquire About a Project"}

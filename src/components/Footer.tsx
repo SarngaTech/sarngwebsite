@@ -88,7 +88,13 @@ export default function Footer() {
 
       <div className="relative border-t border-white/10">
         <div className="container flex flex-col items-center justify-between gap-3 py-6 text-sm text-slate-400 sm:flex-row">
-          <p>© 2026 Sarng Infotech. All Rights Reserved.</p>
+          <p>
+            © 2026 Sarng Infotech. All Rights Reserved.
+            <span aria-hidden className="mx-2 text-slate-600">·</span>
+            <Link href="/privacy-policy" className="text-slate-300 underline-offset-4 transition hover:text-white hover:underline">
+              Privacy Policy
+            </Link>
+          </p>
           <p>{site.pillars}</p>
         </div>
       </div>
